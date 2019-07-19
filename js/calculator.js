@@ -16,15 +16,16 @@ const calculator_state = {
 function init(){
 
 	//grab DOM stuff
-	const numbers   = document.getElementsByClassName("number button");
-	const output    = document.getElementById("output");
-	const clear     = document.getElementById("clear");
-	const addBtn    = document.getElementById("add");
-	const subBtn    = document.getElementById("subtract");
-	const submitBtn = document.getElementById("submit");
+	const numbers     = document.getElementsByClassName("number button");
+	const output      = document.getElementById("output");
+	const clear       = document.getElementById("clear");
+	const addBtn      = document.getElementById("add");
+	const subBtn      = document.getElementById("subtract");
+	const multiplyBtn = document.getElementById("multiply");
+	const submitBtn   = document.getElementById("submit");
 
 	//add elements to the state
-	calculator_state.elements.output          = output;
+	calculator_state.elements.output = output;
 
 	//bind update functions to the state
 	updateOutput    = updateOutput.bind(true, calculator_state);
@@ -35,7 +36,8 @@ function init(){
 	//build operator functions
 	const addOperator      = setCurrentOperator.bind(true, calculator_state, "add");
 	const subtractOperator = setCurrentOperator.bind(true, calculator_state, "subtract");
-	
+	const multiplyOperator = setCurrentOperator.bind(true, calculator_state, "multiply");
+
 	//add number-button listeners
 	for(let number of numbers){
 		number.addEventListener("click", updateCurrentOp);
@@ -48,6 +50,7 @@ function init(){
 	//add operator event listeners
 	addBtn.addEventListener("click", addOperator);
 	subBtn.addEventListener("click", subtractOperator);
+	multiplyBtn.addEventListener("click", multiplyOperator);
 }//init
 
 function updateCurrentOp(state, event){
@@ -57,13 +60,11 @@ function updateCurrentOp(state, event){
 		value: number // (number) data-value of the clicked number button
 	} = event.target.dataset;
 
-	const [ currentOp ] = state.operations;
+	const [ currentOp ]        = state.operations;
 	const { value: currentNo } = currentOp;
-	const newNumber = `${currentNo}${number}`;
+	const newNumber            = `${currentNo}${number}`;
 
 	currentOp.value = newNumber;
-
-	console.log(currentOp.value, { newNumber, currentNo });
 
 	updateOutput();
 }//updateCurrentOp
@@ -79,7 +80,7 @@ function updateOutput(state, event){
 	for(let index = operations.length-1; index > -1; index--){
 		const operation = operations[index];
 		const { value, name } = operation;
-
+	
 		operationString += `${name}${value}`;		
 		
 	}
@@ -126,7 +127,16 @@ function setCurrentOperator(state, key, event){
 				name: "-"
 			};	
 			break;
-		}
+		};
+
+		case "multiply": {
+			operation = {
+				value: "",
+				operator: multiply,
+				name: "*"
+			}
+			break;
+		};
 	}
 
 	//add the new operation to the queue
@@ -146,6 +156,14 @@ function subtract(currentValue = 0, additionalValue = 0){
 	return result;
 }//subtract
 
+function multiply(currentValue = 1, additionalValue = 1){
+
+	console.log(`multiply ${currentValue} by ${additionalValue}`);
+
+	const result = parseInt(currentValue) * parseInt(additionalValue);
+	return result;
+}//multiply
+
 function calculate(state, event){
 
 	//prevent reload
@@ -154,14 +172,14 @@ function calculate(state, event){
 	const { operations } = state;
 
 	//increment index by two, as we're already checking the 'next' value inside the loop
-	let total = 0;
-	for(let operation of operations){
+	let total;
+	for(let index = operations.length - 1; index > -1; index--){
 
+		const operation           = operations[index];
 		const { value, operator } = operation;
-		const runningTotal = operator(total, value);
+		const runningTotal        = operator(total, value);
 
 		total = runningTotal;
-		
 	}
 
 	// create a new initial operation
@@ -171,7 +189,6 @@ function calculate(state, event){
 		name: total > 0 ? "+" : "-"
 	}];
 
-	// //update the output no. with the total
-	// state.currentNo  = total;
+	//update the output no. with the total
 	updateOutput();
 }//calculate
