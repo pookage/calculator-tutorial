@@ -203,10 +203,12 @@ function calculate(state, event){
 
 	// create a new initial operation
 	state.operations = [{
-		value: total,
+		value: Math.abs(total),
 		operator: total > 0 ? add : subtract,
 		name: total > 0 ? "+" : "-"
 	}];
+
+	console.log(state.operations);
 
 	//update the output no. with the total
 	updateOutput();
