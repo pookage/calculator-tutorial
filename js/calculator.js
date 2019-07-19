@@ -88,8 +88,12 @@ function updateOutput(state, event){
 function clearOutput(state, event){
 	event.preventDefault();
 
-	state.output = undefined;
-	state.elements.output.innerText = "";
+	state.currentNo = "";
+	state.operations = [];
+
+	updateOutput();
+
+	console.log(state);
 }//clearOutput
 
 function setCurrentOperator(state, key, event){
