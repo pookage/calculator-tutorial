@@ -22,6 +22,7 @@ function init(){
 	const addBtn      = document.getElementById("add");
 	const subBtn      = document.getElementById("subtract");
 	const multiplyBtn = document.getElementById("multiply");
+	const divideBtn   = document.getElementById("divide");
 	const submitBtn   = document.getElementById("submit");
 
 	//add elements to the state
@@ -34,9 +35,10 @@ function init(){
 	calculate       = calculate.bind(true, calculator_state);
 
 	//build operator functions
-	const addOperator      = setCurrentOperator.bind(true, calculator_state, "add");
-	const subtractOperator = setCurrentOperator.bind(true, calculator_state, "subtract");
-	const multiplyOperator = setCurrentOperator.bind(true, calculator_state, "multiply");
+	const addOperation      = setCurrentOperation.bind(true, calculator_state, "add");
+	const subtractOperation = setCurrentOperation.bind(true, calculator_state, "subtract");
+	const multiplyOperation = setCurrentOperation.bind(true, calculator_state, "multiply");
+	const divideOperation   = setCurrentOperation.bind(true, calculator_state, "divide");
 
 	//add number-button listeners
 	for(let number of numbers){
@@ -48,9 +50,10 @@ function init(){
 	submitBtn.addEventListener("click", calculate);
 
 	//add operator event listeners
-	addBtn.addEventListener("click", addOperator);
-	subBtn.addEventListener("click", subtractOperator);
-	multiplyBtn.addEventListener("click", multiplyOperator);
+	addBtn.addEventListener("click", addOperation);
+	subBtn.addEventListener("click", subtractOperation);
+	multiplyBtn.addEventListener("click", multiplyOperation);
+	divideBtn.addEventListener("click", divideOperation);
 }//init
 
 function updateCurrentOp(state, event){
@@ -80,7 +83,7 @@ function updateOutput(state, event){
 	for(let index = operations.length-1; index > -1; index--){
 		const operation = operations[index];
 		const { value, name } = operation;
-	
+
 		operationString += `${name}${value}`;		
 		
 	}
@@ -96,7 +99,7 @@ function clearOutput(state, event){
 	updateOutput();
 }//clearOutput
 
-function setCurrentOperator(state, key, event){
+function setCurrentOperation(state, key, event){
 
 	event.preventDefault();
 
@@ -137,6 +140,15 @@ function setCurrentOperator(state, key, event){
 			}
 			break;
 		};
+
+		case "divide": {
+			operation = {
+				value: "",
+				operator: divide,
+				name: "/"
+			}
+			break;
+		};
 	}
 
 	//add the new operation to the queue
@@ -144,7 +156,7 @@ function setCurrentOperator(state, key, event){
 
 	//update the output with the new info
 	updateOutput();
-}//setCurrentOperator
+}//setCurrentOperation
 
 function add(currentValue = 0, additionalValue = 0){
 	const result = parseInt(currentValue) + parseInt(additionalValue);
@@ -157,12 +169,14 @@ function subtract(currentValue = 0, additionalValue = 0){
 }//subtract
 
 function multiply(currentValue = 1, additionalValue = 1){
-
-	console.log(`multiply ${currentValue} by ${additionalValue}`);
-
 	const result = parseInt(currentValue) * parseInt(additionalValue);
 	return result;
 }//multiply
+
+function divide(currentValue = 1, additionalValue = 1){
+	const result = parseInt(currentValue) / parseInt(additionalValue);
+	return result;
+}//divide
 
 function calculate(state, event){
 
