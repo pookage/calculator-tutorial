@@ -8,4 +8,5 @@ A simple calculator app to demonstrate for a video walkthrough.
 
 - `00:00:00` Plannin'
 - `00:49:00` Pre-Release
-- `01:15:00` MVP
+- `01:15:00` MVP-1
+- `02:04:00` MVP-2
