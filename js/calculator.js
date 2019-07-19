@@ -2,8 +2,8 @@ window.addEventListener("DOMContentLoaded", init);
 
 //initialise state variables
 const calculator_state = {
-	output: "",
-	operator: undefined,
+	currentNo: "",
+	operations: [],
 	elements: {
 		output: undefined,
 		buttons: {
@@ -29,6 +29,7 @@ function init(){
 
 	//bind update functions to the state
 	updateOutput = updateOutput.bind(true, calculator_state);
+	updateCurrNo = updateCurrNo.bind(true, calculator_state);
 	clearOutput  = clearOutput.bind(true, calculator_state);
 
 	//build operator functions
@@ -37,7 +38,7 @@ function init(){
 	
 	//add number-button listeners
 	for(let number of numbers){
-		number.addEventListener("click", updateOutput);
+		number.addEventListener("click", updateCurrNo);
 	}
 
 	//add clear event listeners
@@ -48,7 +49,7 @@ function init(){
 
 }//init
 
-function updateOutput(state, event){
+function updateCurrNo(state, event){
 	event.preventDefault();
 
 	const { 
@@ -56,23 +57,32 @@ function updateOutput(state, event){
 	} = event.target.dataset;
 
 	const {
-		output,   // (number) current numerical value of output display
-		operator, // (function) current math function to call
-		elements: { 
-			output: outputEl // (HTMLElement) <output> ui element to flush results to
-		}
+		currentNo, // (string) current numerical value of output display
 	} = state;
 
-	let newOutput;
-	if(!!operator){
-		newOutput      = operator(output, number);
-		state.operator = undefined;
-	} else {
-		newOutput = `${output || ""}${number}`;
+	const newNo = `${currentNo || ""}${number}`;
+
+	//update current value
+	state.currentNo = newNo;
+
+	updateOutput();
+}//updateCurrNo
+
+function updateOutput(state, event){
+	
+	const {
+		currentNo,
+		operations,
+		elements: { output }
+	} = state;
+
+	let operationString = "";
+	for(let operation of operations){
+		const { lastNo, name } = operation;
+		operationString += `${lastNo}${name}`;
 	}
 
-	state.output       = newOutput;
-	outputEl.innerText = newOutput;
+	output.innerText = `${operationString}${currentNo}`;
 }//updateOutput
 
 function clearOutput(state, event){
@@ -86,17 +96,31 @@ function setCurrentOperator(state, key, event){
 
 	event.preventDefault();
 
-	const { 
+	const {
+		currentNo = "0",
+		operations, 
 		elements: { 
 			output: outputEl
 		} 
 	} = state;
 
+	let operation;
 	if(key === "add"){
-		state.operator = add;
-		outputEl.innerText += "+";
+		operation = {
+			lastNo: parseInt(currentNo),
+			operator: add,
+			name: "+"
+		};
 	}
+	
+	//add the new operation to the queue
+	operations.push(operation);
 
+	//reset the current number for the next number
+	state.currentNo = "";
+
+	//update the output with the new info
+	updateOutput();
 }//setCurrentOperator
 
 function add(currentValue = 0, additionalValue){
