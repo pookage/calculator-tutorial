@@ -1,0 +1,58 @@
+/* FONT STUFF
+ -----------------------*/
+html {
+	font-size: 24px;
+	font-family: 'Open Sans', sans-serif;
+}
+
+body, p {
+	font-size: 1em;
+}
+
+h2 {
+	font-size: 1.62em;
+}
+h1 {
+	font-size: 2.62em;
+}
+
+/* SPACING
+-------------------------*/
+p + p {
+	margin-top: 0.62em;
+}
+h1 {
+	margin-bottom: 0.62em;
+}
+
+/* ELEMENT
+-----------------------*/
+html, body {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+p a:link,
+p a:visited {
+	display: inline-block;
+	padding: 0.62em 1em;
+	border: 0.15em solid var(--color__action);
+	margin: 0 0.25em;
+	font-weight: bold;
+	text-decoration: none;
+	color: var(--color__bg);
+	background-color: var(--color__action);
+	transition: background-color .3s,
+				color .3s;
+}
+p a:link:hover,
+p a:visited:hover {
+	color: var(--color__action);
+	background-color: transparent;
+}

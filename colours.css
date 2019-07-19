@@ -1,0 +1,24 @@
+/* VARIABLE DEFINTIONS
+---------------------- */
+:root {
+	--color__text: #222;
+	--color__accent: #ccc;
+	--color__action: #4126ed;
+	--color__bg: #fafafa;
+}
+
+/* ELEMENTS
+--------------------- */
+html {
+	color: var(--color__text);
+	background-color: var(--color__bg);
+}
+
+h1 {
+	color: var(--color__accent);
+}
+
+a:link,
+a:visited {
+	color: var(--color__action);
+}
