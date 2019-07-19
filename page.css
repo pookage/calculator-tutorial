@@ -1,21 +1,3 @@
-/* FONT STUFF
- -----------------------*/
-html {
-	font-size: 24px;
-	font-family: 'Open Sans', sans-serif;
-}
-
-body, p {
-	font-size: 1em;
-}
-
-h2 {
-	font-size: 1.62em;
-}
-h1 {
-	font-size: 2.62em;
-}
-
 /* SPACING
 -------------------------*/
 p + p {

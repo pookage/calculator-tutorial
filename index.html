@@ -5,20 +5,28 @@
 		<title>Calculator Tutorial</title>
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="reset.css">
+		<link rel="stylesheet" href="fonts.css">
 		<link rel="stylesheet" href="colours.css">
-		<link rel="stylesheet" href="page.css">
+		<link rel="stylesheet" href="calculator.css">
 	</head>
 	<body>
-		<h1>
-			Calculator Tutorial
-		</h1>
-		<p>
-			Damn, you hit this page a bit early. Come back in a bit, and there'll hopefully be something to see!
-		</p>
-		<p>
-			If you're curious as to what this is all about - come read me the 
-			<a href="https://github.com/pookage/calculator-tutorial" target="_blank">readme</a>
-			to learn more.
-		</p>
+		<form>
+			<output class="output">
+				Please enter a number
+			</output>
+			<fieldset>
+				<button data-value="1" class="button number">1</button>
+				<button data-value="2" class="button number">2</button>
+				<button data-value="3" class="button number">3</button>
+				<button data-value="4" class="button number">4</button>
+				<button data-value="5" class="button number">5</button>
+				<button data-value="6" class="button number">6</button>
+				<button data-value="7" class="button number">7</button>
+				<button data-value="8" class="button number">8</button>
+				<button data-value="9" class="button number">9</button>
+				<button data-value="10" class="button number">10</button>
+				<button class="button function">CLEAR</button>
+			</fieldset>
+		</form>
 	</body>
 </html>
