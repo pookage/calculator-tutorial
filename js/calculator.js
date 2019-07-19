@@ -5,8 +5,9 @@ const calculator_state = {
 	output: "",
 	elements: {
 		output: undefined,
-		clear: undefined,
+		operator: undefined,
 		buttons: {
+			clear: undefined,
 			numbers: {}
 		}
 	}
@@ -15,9 +16,16 @@ const calculator_state = {
 function init(){
 
 	//grab DOM stuff
-	const numbers = calculator_state.elements.buttons.numbers = document.getElementsByClassName("number button");
-	calculator_state.elements.output = document.getElementById("output");
-	calculator_state.elements.clear  = document.getElementById("clear");
+	const numbers = document.getElementsByClassName("number button");
+	const output  = document.getElementById("output");
+	const clear   = document.getElementById("clear");
+	const add     = document.getElementById("add");
+
+	//add elements to the state
+	calculator_state.elements.output          = output;
+	calculator_state.elements.buttons.numbers = numbers;
+	calculator_state.elements.buttons.clear   = clear;
+	calculator_state.elements.buttons.add     = add;
 
 	//bind update functions to the state
 	updateOutput = updateOutput.bind(true, calculator_state);
@@ -30,7 +38,6 @@ function init(){
 
 	//add clear event listeners
 	clear.addEventListener("click", clearOutput);
-
 }//init
 
 function updateOutput(state, event){
@@ -59,3 +66,7 @@ function clearOutput(state, event){
 	state.output = "";
 	state.elements.output.innerText = "";
 }//clearOutput
+
+function add(){
+
+}//add
