@@ -1,7 +1,7 @@
 window.addEventListener("DOMContentLoaded", init);
 
 //initialise state variables
-const state = {
+const calculator_state = {
 	output: "",
 	elements: {
 		output: undefined,
@@ -15,9 +15,13 @@ const state = {
 function init(){
 
 	//grab DOM stuff
-	const numbers = state.elements.buttons.numbers = document.getElementsByClassName("number button");
-	state.elements.output = document.getElementById("output");
-	state.elements.clear  = document.getElementById("clear");
+	const numbers = calculator_state.elements.buttons.numbers = document.getElementsByClassName("number button");
+	calculator_state.elements.output = document.getElementById("output");
+	calculator_state.elements.clear  = document.getElementById("clear");
+
+	//bind update functions to the state
+	updateOutput = updateOutput.bind(true, calculator_state);
+	clearOutput  = clearOutput.bind(true, calculator_state);
 
 	//add number-button listeners
 	for(let number of numbers){
@@ -29,7 +33,7 @@ function init(){
 
 }//init
 
-function updateOutput(event){
+function updateOutput(state, event){
 	event.preventDefault();
 
 	const { 
@@ -49,7 +53,7 @@ function updateOutput(event){
 	outputEl.innerText = newOutput;
 }//updateOutput
 
-function clearOutput(event){
+function clearOutput(state, event){
 	event.preventDefault();
 
 	state.output = "";
