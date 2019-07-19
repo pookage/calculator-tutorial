@@ -151,8 +151,13 @@ function setCurrentOperation(state, key, event){
 		};
 	}
 
-	//add the new operation to the queue
-	operations.unshift(operation);
+	if(!operations[0].value){
+		operations[0] = operation;
+	} else {
+		//add the new operation to the queue
+		operations.unshift(operation);	
+	}
+	
 
 	//update the output with the new info
 	updateOutput();
