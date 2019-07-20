@@ -7,7 +7,7 @@ h1 {
 	margin-bottom: 0.62em;
 }
 
-/* ELEMENT
+/* ELEMENTS
 -----------------------*/
 html, body {
 	height: 100%;
@@ -37,4 +37,12 @@ p a:link:hover,
 p a:visited:hover {
 	color: var(--color__action);
 	background-color: transparent;
+}
+
+.wrapper {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
 }

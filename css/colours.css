@@ -3,8 +3,14 @@
 :root {
 	--color__text: #222;
 	--color__accent: #ccc;
-	--color__action: #4126ed;
+	--color__action: #5e76d6;
 	--color__bg: #fafafa;
+	--color__bg__button__number: #222;
+	--color__bg__button__function: #444;
+	--color__bg__button__disabled: #888;
+	--color__text__light: #eee;
+	--color__bg__danger: #cc3131;
+	--color__bg__output: #ddd;
 }
 
 /* ELEMENTS

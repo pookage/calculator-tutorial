@@ -6,6 +6,7 @@
 	grid-template-rows: repeat(7, 1fr);
 	grid-template-columns: repeat(4, 1fr);
 }
+
 	/* OUTPUT SCREEN
 	------------------------------- */
 	.output {
@@ -15,24 +16,85 @@
 		width: 100%;
 		justify-content: center;
 		align-items: center;
-		background-color: #ddd;
+		background-color: var(--color__bg__output);
 	}
-	/* BUTTON STYLES
+
+
+	/* BUTTON RESTING STYLES
 	------------------------------- */
 	.button {
 		padding: 1em;
+		outline: 0;
+		position: relative;
 		color: var(--color__text);
-		background-color: #ccc;
-	}
-	.button:not(:disabled):hover {
-		cursor: pointer;
-		background-color: #bbb;	
-	}
-	.button:disabled {
-		opacity: 0.5;
-		background-color: #eee;
+		text-shadow: 1px 1px 0 black;
+		transform: scale(1);
+		transition: transform .15s,
+					background-color .15s,
+					outline .15s;
 	}
 
+	.button.number {
+		color: var(--color__text__light);
+		background-color: var(--color__bg__button__number);
+	}
+
+	.button.function,
+	.button.operator {
+		color: var(--color__text__light);
+		background-color: var(--color__bg__button__function);	
+	}
+
+	.button.function.clear,
+	.button.function.clear:hover {
+		background-color: var(--color__bg__danger);
+	}
+
+	/* BUTTON STATES
+	----------------------------- */
+	.button:not(:disabled):hover,
+	.button.number:hover,
+	.button.function:not(:disabled):hover,
+	.button.operator:hover {
+		outline: 0;
+		z-index: 2;
+		transform: scale(1.2);
+		background-color: var(--color__action);
+		box-shadow: 0 0 0.62em 0em rgba(0,0,0,0.5);
+	}
+
+	.button:not(:disabled):focus,
+	.button.number:focus,
+	.button.function:not(:disabled):focus,
+	.button.operator:focus {
+		outline: 0.2em solid var(--color__action);
+		z-index: 1;
+	}
+
+	.button:not(:disabled):active,
+	.button.number:active,
+	.button.function:not(:disabled):active,
+	.button.operator:active {
+		outline: 0;
+		z-index: 1;
+		transform: scale(1.1);
+		background-color: var(--color__action);
+	} 
+
+	.button:not(:disabled):hover {
+		cursor: pointer;
+	}
+	
+	.button:disabled {
+		color: var(--color__bg__button__disabled);
+		text-shadow: 
+			1px 1px 0px var(--color__text),
+			-1px -1px 0px var(--color__accent);
+		background-color: var(--color__bg__button__disabled);
+	}
+
+	/* NUMPAD LAYOUT
+	----------------------------- */
 	.button.zero {
 		grid-column: 1 / 3;
 		grid-row: 6 / 7;

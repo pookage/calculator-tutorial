@@ -15,3 +15,7 @@ h2 {
 h1 {
 	font-size: 2.62em;
 }
+
+.output {
+	font-family: 'Inconsolata', monospace;
+}
