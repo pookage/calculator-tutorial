@@ -1,7 +1,9 @@
 .calculator {
 	display: grid;
 	height: 50vw;
+	max-height: 100%;
 	width: 37.5vw;
+	max-width: 100%;
 	margin: auto;
 	grid-template-rows: repeat(7, 1fr);
 	grid-template-columns: repeat(4, 1fr);
@@ -14,6 +16,7 @@
 		grid-column-end: 5;
 		display: flex;
 		width: 100%;
+		padding: 1em 0.62em;
 		justify-content: center;
 		align-items: center;
 		background-color: var(--color__bg__output);
@@ -84,7 +87,7 @@
 	.button:not(:disabled):hover {
 		cursor: pointer;
 	}
-	
+
 	.button:disabled {
 		color: var(--color__bg__button__disabled);
 		text-shadow: 
