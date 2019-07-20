@@ -1,5 +1,3 @@
-window.addEventListener("DOMContentLoaded", init);
-
 //initialise state variables
 const DEFAULT_OP = { 
 	name: "+",
@@ -11,12 +9,18 @@ const CALCULATOR_STATE  = {
 	operations: [{ ...DEFAULT_OP }],
 	stored: getStoredValue(),
 	elements: {
-		output: undefined
+		output: undefined,
+		recall: undefined,
 	}
 };
 
+window.addEventListener("DOMContentLoaded", init);
+
 function init(){
 
+	/*///////////////////////////
+	//  DOM RETRIEVAL          //
+	///////////////////////////*/
 	//grab DOM stuff
 	const numbers         = document.getElementsByClassName("number button");
 	const output          = document.getElementById("output");
@@ -28,10 +32,17 @@ function init(){
 	const submitBtn       = document.getElementById("submit");
 	const memoryAddBtn    = document.getElementById("madd");
 	const memoryRecallBtn = document.getElementById("mrecall");
+	const memoryRemoveBtn = document.getElementById("mremove");
 
 	//add elements to the state
 	CALCULATOR_STATE.elements.output = output;
+	CALCULATOR_STATE.elements.recall = memoryRecallBtn;
+	CALCULATOR_STATE.elements.remove = memoryRemoveBtn;
 
+
+	/*///////////////////////////
+	//  SCOPE BINDING          //
+	///////////////////////////*/
 	//bind update functions to the state
 	updateOutput     = updateOutput.bind(true, CALCULATOR_STATE);
 	updateCurrentOp  = updateCurrentOp.bind(true, CALCULATOR_STATE);
@@ -39,6 +50,7 @@ function init(){
 	calculate        = calculate.bind(true, CALCULATOR_STATE);
 	addToMemory      = addToMemory.bind(true, CALCULATOR_STATE);
 	recallFromMemory = recallFromMemory.bind(true, CALCULATOR_STATE);
+	removeFromMemory = removeFromMemory.bind(true, CALCULATOR_STATE);
 
 	//build operator functions
 	const addOperation      = setCurrentOperation.bind(true, CALCULATOR_STATE, "add");
@@ -46,6 +58,10 @@ function init(){
 	const multiplyOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "multiply");
 	const divideOperation   = setCurrentOperation.bind(true, CALCULATOR_STATE, "divide");
 
+
+	/*///////////////////////////
+	//  EVENT LISTENERS        //
+	///////////////////////////*/
 	//add number-button listeners
 	for(let number of numbers){
 		number.addEventListener("click", updateCurrentOp);
@@ -56,12 +72,22 @@ function init(){
 	submitBtn.addEventListener("click", calculate);
 	memoryAddBtn.addEventListener("click", addToMemory);
 	memoryRecallBtn.addEventListener("click", recallFromMemory);
+	memoryRemoveBtn.addEventListener("click", removeFromMemory);
 
 	//add operator event listeners
 	addBtn.addEventListener("click", addOperation);
 	subBtn.addEventListener("click", subtractOperation);
 	multiplyBtn.addEventListener("click", multiplyOperation);
 	divideBtn.addEventListener("click", divideOperation);
+
+
+	/*///////////////////////////
+	//  ???                    //
+	///////////////////////////*/
+	if(!CALCULATOR_STATE.stored){
+		memoryRecallBtn.disabled = true;
+		memoryRemoveBtn.disabled = true;
+	}
 }//init
 
 function updateCurrentOp(state, event){
@@ -225,8 +251,12 @@ function addToMemory(state, event){
 
 	event.preventDefault();
 
-	const operationToStore = calculate(event);
-	state.stored           = operationToStore;
+	const { recall, remove } = state.elements;
+	const operationToStore   = calculate(event);
+	state.stored             = operationToStore;
+
+	recall.disabled = false;
+	remove.disabled = false;
 
 	try {
 		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(operationToStore));
@@ -234,6 +264,15 @@ function addToMemory(state, event){
 		console.warn("Unable to save to local storage on local file");
 	}
 }//addToMemory
+
+function removeFromMemory(state, event){
+
+	const { recall, remove } = state.elements;
+
+	state.stored    = undefined;
+	recall.disabled = true;
+	remove.disabled = true;
+}//removeFromMemory
 
 function recallFromMemory(state, event){
 
