@@ -1,4 +1,4 @@
-# calculator-tutorial 🤓
+# calculator-tutorial 🖩
 
 A simple calculator app to demonstrate via video walkthrough for @fshenton.
 
