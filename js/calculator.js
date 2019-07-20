@@ -18,25 +18,27 @@ const CALCULATOR_STATE  = {
 function init(){
 
 	//grab DOM stuff
-	const numbers      = document.getElementsByClassName("number button");
-	const output       = document.getElementById("output");
-	const clear        = document.getElementById("clear");
-	const addBtn       = document.getElementById("add");
-	const subBtn       = document.getElementById("subtract");
-	const multiplyBtn  = document.getElementById("multiply");
-	const divideBtn    = document.getElementById("divide");
-	const submitBtn    = document.getElementById("submit");
-	const memoryAddBtn = document.getElementById("madd");
+	const numbers         = document.getElementsByClassName("number button");
+	const output          = document.getElementById("output");
+	const clear           = document.getElementById("clear");
+	const addBtn          = document.getElementById("add");
+	const subBtn          = document.getElementById("subtract");
+	const multiplyBtn     = document.getElementById("multiply");
+	const divideBtn       = document.getElementById("divide");
+	const submitBtn       = document.getElementById("submit");
+	const memoryAddBtn    = document.getElementById("madd");
+	const memoryRecallBtn = document.getElementById("mrecall");
 
 	//add elements to the state
 	CALCULATOR_STATE.elements.output = output;
 
 	//bind update functions to the state
-	updateOutput    = updateOutput.bind(true, CALCULATOR_STATE);
-	updateCurrentOp = updateCurrentOp.bind(true, CALCULATOR_STATE);
-	clearOutput     = clearOutput.bind(true, CALCULATOR_STATE);
-	calculate       = calculate.bind(true, CALCULATOR_STATE);
-	addToMemory     = addToMemory.bind(true, CALCULATOR_STATE);
+	updateOutput     = updateOutput.bind(true, CALCULATOR_STATE);
+	updateCurrentOp  = updateCurrentOp.bind(true, CALCULATOR_STATE);
+	clearOutput      = clearOutput.bind(true, CALCULATOR_STATE);
+	calculate        = calculate.bind(true, CALCULATOR_STATE);
+	addToMemory      = addToMemory.bind(true, CALCULATOR_STATE);
+	recallFromMemory = recallFromMemory.bind(true, CALCULATOR_STATE);
 
 	//build operator functions
 	const addOperation      = setCurrentOperation.bind(true, CALCULATOR_STATE, "add");
@@ -53,6 +55,7 @@ function init(){
 	clear.addEventListener("click", clearOutput);
 	submitBtn.addEventListener("click", calculate);
 	memoryAddBtn.addEventListener("click", addToMemory);
+	memoryRecallBtn.addEventListener("click", recallFromMemory);
 
 	//add operator event listeners
 	addBtn.addEventListener("click", addOperation);
@@ -205,31 +208,52 @@ function calculate(state, event){
 	}
 
 	// create a new initial operation
-	state.operations = [{
+	const newOperation = {
 		value: Math.abs(total),
 		operator: total > 0 ? add : subtract,
 		name: total > 0 ? "+" : "-"
-	}];
+	};
+	state.operations = [ newOperation ];
 
 	//update the output no. with the total
 	updateOutput();
 
-	return total;
+	return newOperation;
 }//calculate
 
 function addToMemory(state, event){
 
 	event.preventDefault();
 
-	const numToStore = calculate(event);
-	state.stored     = numToStore;
+	const operationToStore = calculate(event);
+	state.stored           = operationToStore;
 
 	try {
-		window.localStorage.setItem(LOCAL_STORAGE_KEY, numToStore.toString());
+		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(operationToStore));
 	} catch(event){
 		console.warn("Unable to save to local storage on local file");
 	}
 }//addToMemory
+
+function recallFromMemory(state, event){
+
+	event.preventDefault();
+
+	const { 
+		stored,
+		operations,
+		elements: { 
+			output 
+		} 
+	} = state;
+
+	if(stored){
+		state.operations = [ stored, ...operations ].filter(emptyOperation);
+		updateOutput();
+	} else {
+		console.warn("Nothing stored in memory to recall!");
+	}
+}//recallFromMemory
 
 function getStoredValue(){
 
@@ -243,3 +267,8 @@ function getStoredValue(){
 
 	return value;
 }//getStoredValue
+
+function emptyOperation(operation){
+	const hasValue = operation.value !== "";
+	return hasValue;
+}
