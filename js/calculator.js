@@ -15,6 +15,7 @@ const CALCULATOR_STATE  = {
 };
 
 window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("keydown", preventSaveFunctionality);
 
 function init(){
 
@@ -43,6 +44,23 @@ function init(){
 	/*///////////////////////////
 	//  SCOPE BINDING          //
 	///////////////////////////*/
+	//build operator functions
+	const addOperation      = setCurrentOperation.bind(true, CALCULATOR_STATE, "add");
+	const subtractOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "subtract");
+	const multiplyOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "multiply");
+	const divideOperation   = setCurrentOperation.bind(true, CALCULATOR_STATE, "divide");
+
+	const operations = {
+		addOperation,
+		subtractOperation,
+		multiplyOperation,
+		divideOperation
+	};
+
+	parseKeyPress    = parseKeyPress.bind(true, operations);
+
+	window.addEventListener("keyup", parseKeyPress);
+
 	//bind update functions to the state
 	updateOutput     = updateOutput.bind(true, CALCULATOR_STATE);
 	updateCurrentOp  = updateCurrentOp.bind(true, CALCULATOR_STATE);
@@ -52,11 +70,6 @@ function init(){
 	recallFromMemory = recallFromMemory.bind(true, CALCULATOR_STATE);
 	removeFromMemory = removeFromMemory.bind(true, CALCULATOR_STATE);
 
-	//build operator functions
-	const addOperation      = setCurrentOperation.bind(true, CALCULATOR_STATE, "add");
-	const subtractOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "subtract");
-	const multiplyOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "multiply");
-	const divideOperation   = setCurrentOperation.bind(true, CALCULATOR_STATE, "divide");
 
 
 	/*///////////////////////////
@@ -64,7 +77,7 @@ function init(){
 	///////////////////////////*/
 	//add number-button listeners
 	for(let number of numbers){
-		number.addEventListener("click", updateCurrentOp);
+		number.addEventListener("click", parseNumberPress);
 	}
 
 	//add function event listeners
@@ -90,13 +103,8 @@ function init(){
 	}
 }//init
 
-function updateCurrentOp(state, event){
-	event.preventDefault();
-
-	const { 
-		value: number // (number) data-value of the clicked number button
-	} = event.target.dataset;
-
+function updateCurrentOp(state, number){
+	
 	const [ currentOp ]        = state.operations;
 	const { value: currentNo } = currentOp;
 	const newNumber            = `${currentNo}${number}`;
@@ -106,7 +114,7 @@ function updateCurrentOp(state, event){
 	updateOutput();
 }//updateCurrentOp
 
-function updateOutput(state, event){
+function updateOutput(state){
 	
 	const {
 		operations,
@@ -147,11 +155,13 @@ function setCurrentOperation(state, key, event){
 
 	switch(key){
 		case "add": {
+
 			operation = {
 				value: "",
 				operator: add,
 				name: "+"
-			};	
+			};
+
 			break;
 		};
 
@@ -310,4 +320,94 @@ function getStoredValue(){
 function emptyOperation(operation){
 	const hasValue = operation.value !== "";
 	return hasValue;
-}
+}//emptyOperation
+
+function parseNumberPress(event){
+	event.preventDefault();
+
+	const { 
+		value: number // (number) data-value of the clicked number button
+	} = event.target.dataset;
+
+	updateCurrentOp(number);
+}//parseNumberPress
+
+function parseKeyPress(operations, event){
+
+	event.preventDefault();
+
+	const { key, ctrlKey } = event;
+
+	switch(key){
+		case "+": {
+			operations.addOperation(event);
+			break;
+		}
+		case "-": {
+			operations.subtractOperation(event);
+			break;
+		}
+		case "*": {
+			operations.multiplyOperation(event);
+			break;
+		}
+		case "/": {
+			operations.divideOperation(event);
+			break;
+		}
+
+		case "=":
+		case "Enter": {
+			calculate(event);
+			break;
+		}
+
+		case "Backspace":
+		case "Delete": {
+			if(ctrlKey) removeFromMemory(event);
+			else        clearOutput(event);
+			break;
+		}
+
+		case "s":
+		case "S": {
+			if(ctrlKey) addToMemory(event);
+			break;
+		}
+
+		case "l":
+		case "L": {
+			if(ctrlKey) recallFromMemory(event);
+			break;
+		}
+
+		case "0":
+		case "1":
+		case "2":
+		case "3":
+		case "4":
+		case "5":
+		case "6":
+		case "7":
+		case "8":
+		case "9": {
+			updateCurrentOp(key)
+			break;
+		}
+	}
+
+}//parseKeyPress
+
+function preventSaveFunctionality(event){
+
+	const { key, ctrlKey } = event;
+
+	switch(key){
+		case "s":
+		case "S":
+		case "l":
+		case "L":
+			if(ctrlKey) event.preventDefault();
+			break;
+	}
+}//preventSaveFunctionality
