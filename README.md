@@ -15,7 +15,7 @@ A simple calculator app to demonstrate via video walkthrough for @fshenton.
 7. [Wrapping Advanced Functionality](https://youtu.be/9_L_NbXlib0)
 8. [Styling](https://youtu.be/XmPBc1evLYA)
 
-Alternatively a playlist of the videos can be found [here[(https://www.youtube.com/watch?v=pbiTbi05aQY&list=PLCJGAkBWXjAyTZAgbNiZBN4FQp79xc-GH)
+Alternatively a playlist of the videos can be found [here](https://www.youtube.com/watch?v=pbiTbi05aQY&list=PLCJGAkBWXjAyTZAgbNiZBN4FQp79xc-GH)
 
 ## Build Process 🔧
 
