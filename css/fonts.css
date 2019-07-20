@@ -19,3 +19,9 @@ h1 {
 .output {
 	font-family: 'Inconsolata', monospace;
 }
+
+@media(max-width: 767px){ 
+	html {
+		font-size: 16px;
+	}
+}
