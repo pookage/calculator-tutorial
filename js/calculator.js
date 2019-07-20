@@ -1,13 +1,15 @@
 window.addEventListener("DOMContentLoaded", init);
 
 //initialise state variables
-const defaultOp = { 
+const DEFAULT_OP = { 
 	name: "+",
 	operator: add,
 	value: ""
 };
-const calculator_state = {
-	operations: [{ ...defaultOp }],
+const LOCAL_STORAGE_KEY = "POOK__CALCULATOR_MEMORY";
+const CALCULATOR_STATE  = {
+	operations: [{ ...DEFAULT_OP }],
+	stored: getStoredValue(),
 	elements: {
 		output: undefined
 	}
@@ -16,29 +18,31 @@ const calculator_state = {
 function init(){
 
 	//grab DOM stuff
-	const numbers     = document.getElementsByClassName("number button");
-	const output      = document.getElementById("output");
-	const clear       = document.getElementById("clear");
-	const addBtn      = document.getElementById("add");
-	const subBtn      = document.getElementById("subtract");
-	const multiplyBtn = document.getElementById("multiply");
-	const divideBtn   = document.getElementById("divide");
-	const submitBtn   = document.getElementById("submit");
+	const numbers      = document.getElementsByClassName("number button");
+	const output       = document.getElementById("output");
+	const clear        = document.getElementById("clear");
+	const addBtn       = document.getElementById("add");
+	const subBtn       = document.getElementById("subtract");
+	const multiplyBtn  = document.getElementById("multiply");
+	const divideBtn    = document.getElementById("divide");
+	const submitBtn    = document.getElementById("submit");
+	const memoryAddBtn = document.getElementById("madd");
 
 	//add elements to the state
-	calculator_state.elements.output = output;
+	CALCULATOR_STATE.elements.output = output;
 
 	//bind update functions to the state
-	updateOutput    = updateOutput.bind(true, calculator_state);
-	updateCurrentOp = updateCurrentOp.bind(true, calculator_state);
-	clearOutput     = clearOutput.bind(true, calculator_state);
-	calculate       = calculate.bind(true, calculator_state);
+	updateOutput    = updateOutput.bind(true, CALCULATOR_STATE);
+	updateCurrentOp = updateCurrentOp.bind(true, CALCULATOR_STATE);
+	clearOutput     = clearOutput.bind(true, CALCULATOR_STATE);
+	calculate       = calculate.bind(true, CALCULATOR_STATE);
+	addToMemory     = addToMemory.bind(true, CALCULATOR_STATE);
 
 	//build operator functions
-	const addOperation      = setCurrentOperation.bind(true, calculator_state, "add");
-	const subtractOperation = setCurrentOperation.bind(true, calculator_state, "subtract");
-	const multiplyOperation = setCurrentOperation.bind(true, calculator_state, "multiply");
-	const divideOperation   = setCurrentOperation.bind(true, calculator_state, "divide");
+	const addOperation      = setCurrentOperation.bind(true, CALCULATOR_STATE, "add");
+	const subtractOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "subtract");
+	const multiplyOperation = setCurrentOperation.bind(true, CALCULATOR_STATE, "multiply");
+	const divideOperation   = setCurrentOperation.bind(true, CALCULATOR_STATE, "divide");
 
 	//add number-button listeners
 	for(let number of numbers){
@@ -48,6 +52,7 @@ function init(){
 	//add function event listeners
 	clear.addEventListener("click", clearOutput);
 	submitBtn.addEventListener("click", calculate);
+	memoryAddBtn.addEventListener("click", addToMemory);
 
 	//add operator event listeners
 	addBtn.addEventListener("click", addOperation);
@@ -83,9 +88,7 @@ function updateOutput(state, event){
 	for(let index = operations.length-1; index > -1; index--){
 		const operation = operations[index];
 		const { value, name } = operation;
-
 		operationString += `${name}${value}`;		
-		
 	}
 
 	output.innerText = `${operationString}`;
@@ -94,7 +97,7 @@ function updateOutput(state, event){
 function clearOutput(state, event){
 	event.preventDefault();
 
-	state.operations = [{ ...defaultOp }];
+	state.operations = [{ ...DEFAULT_OP }];
 
 	updateOutput();
 }//clearOutput
@@ -208,8 +211,35 @@ function calculate(state, event){
 		name: total > 0 ? "+" : "-"
 	}];
 
-	console.log(state.operations);
-
 	//update the output no. with the total
 	updateOutput();
+
+	return total;
 }//calculate
+
+function addToMemory(state, event){
+
+	event.preventDefault();
+
+	const numToStore = calculate(event);
+	state.stored     = numToStore;
+
+	try {
+		window.localStorage.setItem(LOCAL_STORAGE_KEY, numToStore.toString());
+	} catch(event){
+		console.warn("Unable to save to local storage on local file");
+	}
+}//addToMemory
+
+function getStoredValue(){
+
+	let value;
+	try {
+		value = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+	} catch(error) {
+		console.warn("Cannot retrieve files from local storage via a local file.")
+		value = undefined;
+	}
+
+	return value;
+}//getStoredValue
